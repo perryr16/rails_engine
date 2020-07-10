@@ -1,4 +1,5 @@
 require 'CSV'
+require './config/environment'
 
 desc "Print reminder about eating more fruit."
 task :apple do
@@ -7,47 +8,55 @@ end
 
 desc "Load CSV files"
 task :load_csv do 
+  Customer.destroy_all
+  Merchant.destroy_all
+  # ActiveRecord::Base.connection.reset_pk_sequence!('customers')
 
-customers = './data/customers.csv'
-csv_import(customers)
+  customers_csv = './data/customers.csv'
+  build(customers_csv, Customer)
 
-invoice_items = './data/invoice_items.csv'
-csv_import(invoice_items)
+  # invoice_items = './data/invoice_items.csv'
+  # build(invoice_items)
 
-invoices = './data/invoices.csv'
-csv_import(invoices)
+  # invoices = './data/invoices.csv'
+  # build(invoices)
 
-items = './data/items.csv'
-csv_import(items)
+  # items = './data/items.csv'
+  # build(items)
 
-merchants = './data/merchants.csv'
-csv_import(merchants)
+  merchants_csv = './data/merchants.csv'
+  build(merchants_csv, Merchant)
 
-transactions = './data/transactions.csv'
-csv_import(transactions)
-
-invoices = '/'
-  
-
+  # transactions = './data/transactions.csv'
+  # build(transactions)
+  binding.pry
 end
 
 def csv_import(file)
   csv = File.read(file)
-  CSV.parse(csv, headers: true).each do |row|
-    binding.pry
+  csv_rows = CSV.parse(csv, headers: true).map 
+end
+
+def build(file, model)
+  csv_import(file).each do |row|
+    model.create(row.to_hash)
   end
 end
 
+def customer_params(row)
+  {first_name: row["first_name"], last_name: row["last_name"],
+  created_at: row["created_at"], updated_at: row["updated_at"]}
+end
 
-  # #turn list into array
-  # def file_to_string_array
-  #   card_list = []
-  #   # File.open("./lib/two_cards.txt").each do |line|
-  #     File.open(@filename).each do |line|
-  #     card_list << line
-  #   end
-  #   card_list.each do |card|
-  #     card.slice!("\n")
-  #   end
-  #   #@card_list
-  # end
+def merchant_params(row)
+  {name: row["name"],
+  created_at: row["created_at"], updated_at: row["updated_at"]}
+end
+
+# def build_params(row)
+#   params = {}
+#   row.each do |k,v|
+#     params[k] = v if k != "id"
+#   end
+#   params
+# end
