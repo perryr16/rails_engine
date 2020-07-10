@@ -1,4 +1,4 @@
-require 'CSV'
+require 'csv'
 require './config/environment'
 
 desc "Print reminder about eating more fruit."
@@ -10,26 +10,29 @@ desc "Load CSV files"
 task :load_csv do 
   Customer.destroy_all
   Merchant.destroy_all
+  Item.destroy_all
+  Invoice.destroy_all
+  InvoiceItem.destroy_all
+  Transaction.destroy_all
   # ActiveRecord::Base.connection.reset_pk_sequence!('customers')
 
   customers_csv = './data/customers.csv'
   build(customers_csv, Customer)
 
-  # invoice_items = './data/invoice_items.csv'
-  # build(invoice_items)
-
-  # invoices = './data/invoices.csv'
-  # build(invoices)
-
-  # items = './data/items.csv'
-  # build(items)
-
   merchants_csv = './data/merchants.csv'
   build(merchants_csv, Merchant)
+  
+  items_csv = './data/items.csv'
+  build(items_csv, Item)
 
-  # transactions = './data/transactions.csv'
-  # build(transactions)
-  binding.pry
+  invoices_csv = './data/invoices.csv'
+  build(invoices_csv, Invoice)
+  
+  invoice_items_csv = './data/invoice_items.csv'
+  build(invoice_items_csv, InvoiceItem)
+
+  transactions_csv = './data/transactions.csv'
+  build(transactions_csv, Transaction)
 end
 
 def csv_import(file)
@@ -42,21 +45,3 @@ def build(file, model)
     model.create(row.to_hash)
   end
 end
-
-def customer_params(row)
-  {first_name: row["first_name"], last_name: row["last_name"],
-  created_at: row["created_at"], updated_at: row["updated_at"]}
-end
-
-def merchant_params(row)
-  {name: row["name"],
-  created_at: row["created_at"], updated_at: row["updated_at"]}
-end
-
-# def build_params(row)
-#   params = {}
-#   row.each do |k,v|
-#     params[k] = v if k != "id"
-#   end
-#   params
-# end
