@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'rake'
 Rails.application.load_tasks
 
-
 RSpec.describe "load_csv task" do
   
   before :each do 
