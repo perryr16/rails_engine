@@ -33,6 +33,7 @@ task :load_csv do
 
   transactions_csv = './data/transactions.csv'
   build(transactions_csv, Transaction)
+
 end
 
 def csv_import(file)
