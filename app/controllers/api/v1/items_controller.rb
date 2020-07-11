@@ -9,7 +9,10 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create 
-    id = Item.last.id ||= 0
+    # id = Item.last.id ||= 0
+
+    id = Item.last.id if Item.last 
+    id = 0 if Item.last.nil?
     params = item_params.merge(id: id+1)
     render json: ItemSerializer.new(Item.create(params))
   end
