@@ -39,7 +39,8 @@ task :load_csv, [:test] do |t, test|
 
   # transactions_csv = './data/transactions.csv'
   # build(transactions_csv, Transaction)
-
+  puts "Build complete"
+  puts "Item Count: #{Item.all.count}"
 end
 
 def csv_import(file)
