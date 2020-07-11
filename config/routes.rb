@@ -5,9 +5,12 @@ Rails.application.routes.draw do
   namespace :api do
     # scope module: 'api' do
       namespace :v1 do
+        get '/items/find_all', to: 'items/find#index'
         resources :items do 
           resources :merchant, controller: 'items/merchant'
         end
+        get 'merchants/find', to: 'merchants/find#show' #can this be resource based?
+        get 'merchants/find_all', to: 'merchants/find#index' #can this be resource based?
         resources :merchants do 
           resources :items, controller: 'merchants/items'
         end
