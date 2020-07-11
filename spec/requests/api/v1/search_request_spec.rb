@@ -56,6 +56,15 @@ describe "Search endpoints for Items"do
     end
   end
 
+  it 'can find an items that contain a fragment, case insensitive' do
+    get '/api/v1/items/find?name=bob'
+    json = JSON.parse(response.body, symbolize_names: true)
+    name = json[:data][:attributes][:name].downcase
+
+    expect(json[:data]).to be_a(Hash)
+    expect(name).to include('bob')
+  end
+
 
 end
 
@@ -64,15 +73,7 @@ end
 
 
 
-# it 'can find an items that contain a fragment, case insensitive' do
-# response = conn('/api/v1/items/find?name=haru').get
-# json = JSON.parse(response.body, symbolize_names: true)
-# name = json[:data][:attributes][:name].downcase
 
-# expect(json[:data]).to be_a(Hash)
-# expect(name).to include('haru')
-# end
-# end
 
 # describe 'business intelligence' do
 # it 'can get merchants with most revenue' do

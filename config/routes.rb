@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   namespace :api do
     # scope module: 'api' do
       namespace :v1 do
+        get '/items/find', to: 'items/find#show'
         get '/items/find_all', to: 'items/find#index'
         resources :items do 
           resources :merchant, controller: 'items/merchant'
