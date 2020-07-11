@@ -10,6 +10,8 @@ Rails.application.routes.draw do
         resources :items do 
           resources :merchant, controller: 'items/merchant'
         end
+        get 'merchants/most_revenue', to: 'merchants/most_revenue#index'
+        get 'merchants/most_items', to: 'merchants/most_items#index'
         get 'merchants/find', to: 'merchants/find#show' #can this be resource based?
         get 'merchants/find_all', to: 'merchants/find#index' #can this be resource based?
         resources :merchants do 

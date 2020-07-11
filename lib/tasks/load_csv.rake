@@ -31,14 +31,14 @@ task :load_csv, [:test] do |t, test|
   items_csv = "./data/items#{test}.csv"
   build(items_csv, Item)
 
-  # invoices_csv = './data/invoices.csv'
-  # build(invoices_csv, Invoice)
+  invoices_csv = "./data/invoices#{test}.csv"
+  build(invoices_csv, Invoice)
   
-  # invoice_items_csv = './data/invoice_items.csv'
-  # build(invoice_items_csv, InvoiceItem)
+  invoice_items_csv = "./data/invoice_items#{test}.csv"
+  build(invoice_items_csv, InvoiceItem)
 
-  # transactions_csv = './data/transactions.csv'
-  # build(transactions_csv, Transaction)
+  transactions_csv = "./data/transactions#{test}.csv"
+  build(transactions_csv, Transaction)
   puts "Build complete"
   puts "Customer Count: #{Customer.all.count}"
   puts "Item Count: #{Item.all.count}"
