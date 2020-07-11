@@ -5,9 +5,12 @@ Rails.application.routes.draw do
   namespace :api do
     # scope module: 'api' do
       namespace :v1 do
-        resources :items
-        resources :merchants
+        resources :items do 
+          resources :merchant, controller: 'items/merchant'
+        end
+        resources :merchants do 
+          resources :items, controller: 'merchants/items'
+        end
       end
-    # end
   end
 end

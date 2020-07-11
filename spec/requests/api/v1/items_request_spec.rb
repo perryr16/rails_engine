@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'rake'
 
 describe "Items API" do
 
