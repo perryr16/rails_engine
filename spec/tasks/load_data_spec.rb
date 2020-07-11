@@ -8,7 +8,7 @@ RSpec.describe "load_csv task" do
     Rake::Task[:load_csv].invoke
   end
 
-  xit "Customers Created" do
+  xit "Models Created" do
     expect(Customer.all.count).to eq(1000)
     expect(Customer.first.id).to eq(1)
     expect(Customer.first.first_name).to eq("Joey")
