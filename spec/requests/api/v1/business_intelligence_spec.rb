@@ -86,7 +86,15 @@ describe 'business intelligence' do
     get '/api/v1/revenue?start=2012-03-09&end=2012-03-24'
 
     json = JSON.parse(response.body, symbolize_names: true)
+   
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(43201227.80)
+  end
 
+  it 'can get revenue for one merchant between two dates' do
+    get "/api/v1/merchants/#{@merchant1.id}/revenue?start=2012-03-09&end=2012-03-24"
+
+    json = JSON.parse(response.body, symbolize_names: true)
+   
     expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(43201227.80)
   end
 end
