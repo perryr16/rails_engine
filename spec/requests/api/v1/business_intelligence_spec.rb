@@ -82,8 +82,8 @@ describe 'business intelligence' do
     expect(json[:data][1][:id]).to eq("3")
   end
 
-  xit 'can get revenue between two dates' do
-    response = conn('/api/v1/revenue?start=2012-03-09&end=2012-03-24').get
+  it 'can get revenue between two dates' do
+    get '/api/v1/revenue?start=2012-03-09&end=2012-03-24'
 
     json = JSON.parse(response.body, symbolize_names: true)
 
