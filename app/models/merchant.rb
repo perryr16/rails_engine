@@ -43,29 +43,20 @@ class Merchant < ApplicationRecord
     .where("invoices.updated_at >= '#{start_date}' AND invoices.updated_at <= '#{end_date}'")[0]
   end
 
-  def self.invidual_revenue_between_dates(params)
+
+   def self.individual_revenue_between_dates(params)
     start_date = params[:start]
     end_date = params[:end]
-    binding.pry
+    id = params[:id]
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .joins(:invoice)
     .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
-    .where("transactions.result = 'success'")
-    # .where("invoices.updated_at >= '#{start_date}' AND invoices.updated_at <= '#{end_date}'")[0]
+    .where(transactions: {result: 'success'})
+    .where("invoices.merchant_id = #{id}")
+    .where("invoices.updated_at > '#{start_date}' AND invoices.updated_at < '#{end_date}'")[0]
   end
 
-   def self.invidual_revenue_between_dates(params)
-    binding.pry
-    merchant.find(params[:id])
-    merchant.select("merchants.*, SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
-    .joins(:invoices)
-    .joins("INNER JOIN invoice_items ON invoices.id = invoice_items.invoice_id")
-    .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
-    .where(transactions: {result: "success"})
-    .group(:id)
-    .order("SUM(invoice_items.quantity * invoice_items.unit_price) DESC")
-    .limit(params[:quantity])
-  end
+  
 
 end
 
@@ -120,3 +111,7 @@ end
     # INNER JOIN invoice_items ON invoices.id = invoice_items.invoice_id 
     # INNER JOIN transactions ON invoices.id = transactions.invoice_id 
     # WHERE (transactions.result = 'success') 
+
+
+    # InvoiceItem.joins(:invoice).joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id").where(transactions: {result: 'success'}).where("invoices.created_at > '2012-01-01' AND invoices.updated_at < '2020-07-15'")
+    # InvoiceItem.joins(:invoice).joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id").where(transactions: {result: 'success'}).where("invoices.created_at > '2012-01-01' AND invoices.updated_at < '2020-07-15'").where("invoices.merchant_id = 1") 

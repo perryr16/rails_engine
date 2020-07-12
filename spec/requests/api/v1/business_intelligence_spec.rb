@@ -16,7 +16,7 @@ describe 'business intelligence' do
     item3 = create(:item, merchant: @merchant3)
     item4 = create(:item, merchant: @merchant4)
 
-    invoice11 = create(:invoice, merchant: @merchant1, customer: customer)
+    invoice11 = create(:invoice, merchant: @merchant1, customer: customer, updated_at: 'Sun, 19 Jul 2021 18:08:20 UTC +00:00')
     invoice12 = create(:invoice, merchant: @merchant1, customer: customer)
     invoice13 = create(:invoice, merchant: @merchant1, customer: customer)
     invoice21 = create(:invoice, merchant: @merchant2, customer: customer)
@@ -30,12 +30,12 @@ describe 'business intelligence' do
     invoice_item = create(:invoice_item, item: item1, invoice: invoice11, quantity: 100, unit_price: 0.01)
     invoice_item = create(:invoice_item, item: item1, invoice: invoice12, quantity: 100, unit_price: 0.01)
     invoice_item = create(:invoice_item, item: item1, invoice: invoice13, quantity: 100, unit_price: 0.01)
-    invoice_item = create(:invoice_item, item: item2, invoice: invoice21, quantity: 100, unit_price: 1000000)
-    invoice_item = create(:invoice_item, item: item2, invoice: invoice22, quantity: 1)
-    invoice_item = create(:invoice_item, item: item2, invoice: invoice23, quantity: 1)
-    invoice_item = create(:invoice_item, item: item3, invoice: invoice31, quantity: 100)
-    invoice_item = create(:invoice_item, item: item3, invoice: invoice32, quantity: 30)
-    invoice_item = create(:invoice_item, item: item3, invoice: invoice33, quantity: 10)
+    invoice_item = create(:invoice_item, item: item2, invoice: invoice21, quantity: 100, unit_price: 10)
+    invoice_item = create(:invoice_item, item: item2, invoice: invoice22, quantity: 1, unit_price: 1)
+    invoice_item = create(:invoice_item, item: item2, invoice: invoice23, quantity: 1, unit_price: 1)
+    invoice_item = create(:invoice_item, item: item3, invoice: invoice31, quantity: 100, unit_price: 1)
+    invoice_item = create(:invoice_item, item: item3, invoice: invoice32, quantity: 30, unit_price: 1)
+    invoice_item = create(:invoice_item, item: item3, invoice: invoice33, quantity: 10, unit_price: 1)
     invoice_item = create(:invoice_item, item: item4, invoice: invoice41, quantity: 1, unit_price: 0.5)
 
     transaction = create(:transaction, invoice: invoice11, result: "success")
@@ -83,19 +83,19 @@ describe 'business intelligence' do
   end
 
   it 'can get revenue between two dates' do
-    get '/api/v1/revenue?start=2012-03-09&end=2012-03-24'
+    get '/api/v1/revenue?start=2000-01-01&end=2021-07-15'
 
     json = JSON.parse(response.body, symbolize_names: true)
-   
-    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(43201227.80)
+
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(1143.50)
   end
 
   it 'can get revenue for one merchant between two dates' do
-    get "/api/v1/merchants/#{@merchant1.id}/revenue?start=2012-03-09&end=2012-03-24"
+    get "/api/v1/merchants/#{@merchant1.id}/revenue?start=2000-01-01&end=2021-07-15"
 
     json = JSON.parse(response.body, symbolize_names: true)
-   
-    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(43201227.80)
+
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(2.0)
   end
 end
 
