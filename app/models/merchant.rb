@@ -3,7 +3,9 @@ class Merchant < ApplicationRecord
   has_many :invoices, dependent: :destroy
 
   def self.find_all(params)
-    where('lower(name) like ?', "%#{params[:name].downcase}%")
+    # where('lower(name) like ?', "%#{params[:name].downcase}%")
+    where("lower(name) LIKE '%#{params[:name].downcase}%'")
+
   end
 
   def self.find_one(params)
@@ -36,11 +38,14 @@ class Merchant < ApplicationRecord
   def self.most_revenue_between_dates(params)
     start_date = params[:start]
     end_date = params[:end]
+
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .joins(:invoice)
     .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
-    .where("transactions.result = 'success'")
-    .where("invoices.updated_at >= '#{start_date}' AND invoices.updated_at <= '#{end_date}'")[0]
+    .where("transactions.result = 'success' AND invoices.created_at >= '#{start_date}' AND invoices.created_at <= '#{end_date}'")[0]
+    # .where("invoices.status = 'shipped'")
+    # .where("transactions.result = 'success'")
+    # .where("invoices.created_at >= '#{start_date}' AND invoices.created_at <= '#{end_date}'")[0]
   end
 
 
