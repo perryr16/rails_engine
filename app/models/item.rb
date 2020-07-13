@@ -4,22 +4,19 @@ class Item < ApplicationRecord
   has_many :invoices, through: :invoice_items, dependent: :destroy
 
   def self.find_all(params)
-    # where('lower(name) like ?', "%#{params[:name].downcase}%")
-    if params[:name] && params[:description]
-      where("lower(name) LIKE '%#{params[:name].downcase}%' OR lower(description) LIKE '%#{params[:description].downcase}%'")
-    elsif params[:name]
-      where("lower(name) LIKE '%#{params[:name].downcase}%'")
-    elsif params[:description]
-      where("lower(description) LIKE '%#{params[:description].downcase}%'")
-    end
-
+    where(sql_injection(params))
   end
 
   def self.find_one(params)
     find_all(params).first
   end
 
-  def params_match_attributes(params)
-    Item.first.attributes.keys
+  def self.sql_injection(params)
+    attributes = Item.first.attributes if Item.first
+    search_terms = params.permit(attributes.keys).to_h
+    injection = search_terms.map do |k,v|
+      "lower(#{k}) LIKE '%#{v.downcase}%'"
+    end
+    injection.join(" OR ")
   end
 end

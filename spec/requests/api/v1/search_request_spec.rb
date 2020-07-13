@@ -105,7 +105,16 @@ describe "Search endpoints for Items"do
 
     expect(json[:data].class).to eq(Hash)
     expect(description_and_name).to include('cat').or include('bob')
+  end
 
+  it 'can find a list of items that contain a fragment, case insensitive of updated_at' do
+    get '/api/v1/items/find_all?updated_at=2012'
+    json = JSON.parse(response.body, symbolize_names: true)
+    binding.pry
+  
+
+    expect(json[:data].class).to eq(Hash)
+    expect(description_and_name).to include('cat').or include('bob')
   end
 
 

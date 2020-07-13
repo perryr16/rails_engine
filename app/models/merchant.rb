@@ -3,9 +3,16 @@ class Merchant < ApplicationRecord
   has_many :invoices, dependent: :destroy
 
   def self.find_all(params)
-    # where('lower(name) like ?', "%#{params[:name].downcase}%")
-    where("lower(name) LIKE '%#{params[:name].downcase}%'")
+    where(sql_injection(params))
+  end
 
+  def self.sql_injection(params)
+    attributes = Merchant.first.attributes if Merchant.first
+    search_terms = params.permit(attributes.keys).to_h
+    injection = search_terms.map do |k,v|
+      "lower(#{k}) LIKE '%#{v.downcase}%'"
+    end
+    injection.join(" OR ")
   end
 
   def self.find_one(params)
