@@ -69,7 +69,7 @@ describe "Search endpoints for Items"do
     merchant = create(:merchant)
     @item1 = create(:item, merchant: merchant, name: "BOBS item", description: "nope", updated_at: '2012-03-27 14:58:03 UTC')
     @item2 = create(:item, merchant: merchant, name: "bob bob bob", description: "xCATx", updated_at: '2012-03-27 14:58:03 UTC' )
-    @item3 = create(:item, merchant: merchant, name: "Strawberry and rhubob", description: "cars")
+    @item3 = create(:item, merchant: merchant, name: "Strawberry and rhubob", description: "cars", updated_at: '2012-03-27 14:58:05 UTC')
     @item4 = create(:item, merchant: merchant, name: "bo bo bo", description: "adfadfcAtcat", updated_at: '2012-03-27 14:58:03 UTC')
     @item5 = create(:item, merchant: merchant, name: "not valid", description: "cat")
     @item6 = create(:item, merchant: merchant, name: "dog", description: "DOG")
