@@ -35,7 +35,7 @@ describe 'business intelligence' do
     invoice_item = create(:invoice_item, item: item2, invoice: invoice23, quantity: 1, unit_price: 1)
     invoice_item = create(:invoice_item, item: item3, invoice: invoice31, quantity: 100, unit_price: 1)
     invoice_item = create(:invoice_item, item: item3, invoice: invoice32, quantity: 30, unit_price: 1)
-    invoice_item = create(:invoice_item, item: item3, invoice: invoice33, quantity: 10, unit_price: 1)
+    invoice_item = create(:invoice_item, item: item3, invoice: invoice33, quantity: 66, unit_price: 1)
     invoice_item = create(:invoice_item, item: item4, invoice: invoice41, quantity: 1, unit_price: 0.5)
 
     transaction = create(:transaction, invoice: invoice11, result: "success")
@@ -87,7 +87,7 @@ describe 'business intelligence' do
 
     json = JSON.parse(response.body, symbolize_names: true)
 
-    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(1143.50)
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(1200.50)
   end
 
   it 'can get revenue for one merchant between two dates' do

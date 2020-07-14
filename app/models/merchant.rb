@@ -3,7 +3,16 @@ class Merchant < ApplicationRecord
   has_many :invoices, dependent: :destroy
 
   def self.find_all(params)
-    where('lower(name) like ?', "%#{params[:name].downcase}%")
+    where(sql_injection(params))
+  end
+
+  def self.sql_injection(params)
+    attributes = Merchant.first.attributes if Merchant.first
+    search_terms = params.permit(attributes.keys).to_h
+    injection = search_terms.map do |k,v|
+      "lower(#{k}) LIKE '%#{v.downcase}%'"
+    end
+    injection.join(" OR ")
   end
 
   def self.find_one(params)
@@ -34,25 +43,26 @@ class Merchant < ApplicationRecord
   end
 
   def self.most_revenue_between_dates(params)
-    start_date = params[:start]
-    end_date = params[:end]
+    start_date = params[:start].to_datetime
+    end_date = params[:end].to_datetime + 1
+
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .joins(:invoice)
     .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
-    .where("transactions.result = 'success'")
-    .where("invoices.updated_at >= '#{start_date}' AND invoices.updated_at <= '#{end_date}'")[0]
+    .where(transactions: {result: "success"})
+    .where("invoices.created_at > '#{start_date}' AND invoices.created_at < '#{end_date}'")[0]
   end
 
 
    def self.individual_revenue_between_dates(params)
-    start_date = params[:start]
-    end_date = params[:end]
+    start_date = params[:start].to_datetime
+    end_date = params[:end].to_datetime + 1
     id = params[:id]
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .joins(:invoice)
     .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
     .where(transactions: {result: 'success'})
-    .where("invoices.merchant_id = #{id}")
+    .where(invoices: {merchant_id: id})
     .where("invoices.updated_at > '#{start_date}' AND invoices.updated_at < '#{end_date}'")[0]
   end
 
