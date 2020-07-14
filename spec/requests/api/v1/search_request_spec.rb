@@ -3,8 +3,8 @@ require 'rails_helper'
 describe "Search Endpoints for Merchants" do
   before :each do 
     @merchant = create(:merchant, name: 'chill zone')
-    create(:merchant, name: 'THRILL zone')
     create(:merchant, name: 'hammers and drIlLs')
+    create(:merchant, name: 'THRILL zone')
     create(:merchant, name: 'nothing')
     create(:merchant, name: 'lilililili')
     
@@ -30,7 +30,7 @@ describe "Search Endpoints for Merchants" do
     expect(json[:data]).to be_a(Hash)
     expect(name).to include('ill')
   end
-  
+
   it 'can find a merchant based on date of updated_at' do
     get "/api/v1/merchants/find?updated_at=#{@merchant.updated_at}"
     json = JSON.parse(response.body, symbolize_names: true)
@@ -48,6 +48,17 @@ describe "Search Endpoints for Merchants" do
     expect(json[:data].class).to eq(Hash)
 
     expect(json[:data][:attributes][:name]).to eq(@merchant.name)
+  end
+
+  it 'can find a merchant based on date of created_at and fragment of name' do
+    get "/api/v1/merchants/find_all?created_at=#{@merchant.created_at}&name=zone"
+    json = JSON.parse(response.body, symbolize_names: true)
+    
+
+    expect(json[:data].class).to eq(Array)
+
+    expect(json[:data][0][:attributes][:name]).to eq('chill zone')
+    expect(json[:data][1][:attributes][:name]).to eq('THRILL zone')
   end
   
 
