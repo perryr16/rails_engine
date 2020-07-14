@@ -31,8 +31,4 @@ class Api::V1::ItemsController < ApplicationController
     params.permit(:name, :description, :unit_price, :merchant_id)
   end
 
-  # def new_item_params
-  #   params.permit(:name, :description, :unit_price, :merchant_id)
-  # end
-
 end

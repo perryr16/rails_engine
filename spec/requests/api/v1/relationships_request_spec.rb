@@ -15,7 +15,6 @@ describe "Relationships between Items and Merchants API" do
     get '/api/v1/merchants/99/items'
 
     json = JSON.parse(response.body, symbolize_names: true)
-
     expected_ids = (11..20).to_a
     item_ids = json[:data].map do |item|
       item[:id].to_i

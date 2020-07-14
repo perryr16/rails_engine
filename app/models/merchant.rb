@@ -63,19 +63,14 @@ class Merchant < ApplicationRecord
   end
 
 
-   def self.individual_revenue_between_dates(params)
-    start_date = params[:start].to_datetime
-    end_date = params[:end].to_datetime + 1
+   def self.individual_revenue(params)
     id = params[:id]
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .joins(:invoice)
     .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
     .where(transactions: {result: 'success'})
-    .where(invoices: {merchant_id: id})
-    .where("invoices.updated_at > '#{start_date}' AND invoices.updated_at < '#{end_date}'")[0]
+    .where(invoices: {merchant_id: id})[0]
   end
-
-  
 
 end
 
