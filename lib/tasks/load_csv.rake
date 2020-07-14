@@ -1,10 +1,6 @@
 require 'csv'
 require './config/environment'
 
-desc "Print reminder about eating more fruit."
-task :apple do
-  puts "Eat more apples!"
-end
 
 desc "Load CSV files"
 task :load_csv, [:test] do |t, test|

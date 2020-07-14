@@ -6,7 +6,7 @@ class Api::V1::Merchants::RevenueController < ApplicationController
   end
 
   def show 
-     render json: RevenueSerializer.new(Merchant.individual_revenue_between_dates(params))
+     render json: RevenueSerializer.new(Merchant.individual_revenue(params))
   end
   
 end

@@ -91,7 +91,7 @@ describe 'business intelligence' do
   end
 
   it 'can get revenue for one merchant between two dates' do
-    get "/api/v1/merchants/#{@merchant1.id}/revenue?start=2000-01-01&end=2021-07-15"
+    get "/api/v1/merchants/#{@merchant1.id}/revenue"
 
     json = JSON.parse(response.body, symbolize_names: true)
 

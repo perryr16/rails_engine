@@ -1,15 +1,14 @@
 require 'rails_helper'
-require 'rake'
+
 Rails.application.load_tasks
 
 RSpec.describe "load_csv task" do
   
   before :each do 
     Rake::Task[:load_csv].invoke("_test")
-    # Rake::Task[:load_csv].invoke
   end
 
-  xit "Models Created" do
+  it "Models Created" do
     expect(Customer.all.count).to eq(16)
     expect(Customer.first.id).to eq(1)
     expect(Customer.first.first_name).to eq("Joey")
