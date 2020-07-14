@@ -10,9 +10,18 @@ class Merchant < ApplicationRecord
     attributes = Merchant.first.attributes if Merchant.first
     search_terms = params.permit(attributes.keys).to_h
     injection = search_terms.map do |k,v|
-      "lower(#{k}) LIKE '%#{v.downcase}%'"
+      param_generator(k,v)
     end
-    injection.join(" OR ")
+    injection.join(" AND ")
+  end
+
+  def self.param_generator(key, value)
+    if key.include?('ated_at')
+      value = value.to_datetime
+      "#{key} >= '#{value}' AND #{key} < '#{value+1}'"
+    else 
+      "lower(#{key}) LIKE '%#{value.downcase}%'"
+    end
   end
 
   def self.find_one(params)
