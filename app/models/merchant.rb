@@ -3,6 +3,7 @@ class Merchant < ApplicationRecord
   has_many :invoices, dependent: :destroy
 
   def self.find_all(params)
+
     where(sql_injection(params))
   end
 
@@ -18,7 +19,7 @@ class Merchant < ApplicationRecord
   def self.param_generator(key, value)
     if key.include?('ated_at')
       value = value.to_datetime
-      "#{key} >= '#{value}' AND #{key} < '#{value+1}'"
+      "#{key} >= '#{value}' AND #{key} < '#{value+1.seconds}'"
     else 
       "lower(#{key}) LIKE '%#{value.downcase}%'"
     end
