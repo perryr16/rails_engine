@@ -72,8 +72,6 @@ class Merchant < ApplicationRecord
     .where(invoices: {merchant_id: id})[0]
   end
 
-  
-
 end
 
     # SELECT m.name, SUM(ii.quantity * ii.unit_price) AS revenue 

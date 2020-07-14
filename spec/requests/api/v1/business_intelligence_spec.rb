@@ -90,12 +90,12 @@ describe 'business intelligence' do
     expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(1200.50)
   end
 
-  it 'can get revenue for one merchant between two dates' do
+  it 'can get revenue for one merchant' do
     get "/api/v1/merchants/#{@merchant1.id}/revenue"
 
     json = JSON.parse(response.body, symbolize_names: true)
 
-    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(2.0)
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(3.0)
   end
 end
 
