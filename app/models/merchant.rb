@@ -50,8 +50,9 @@ class Merchant < ApplicationRecord
     start_date = params[:start].to_datetime
     end_date = params[:end].to_datetime + 1
 
-    invoice_items_invoices_transactions_success
-    .select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
+    InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
+    .joins(invoice: [:transactions])
+    .where(transactions: {result: 'success'})
     .where("invoices.created_at > '#{start_date}' AND invoices.created_at < '#{end_date}'")[0]
   end
 
@@ -59,26 +60,27 @@ class Merchant < ApplicationRecord
   def self.individual_revenue(params)
     id = params[:id]
 
-    invoice_items_invoices_transactions_success
-    .select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
+    InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
+    .joins(invoice: [:transactions])
+    .where(transactions: {result: 'success'})
     .where(invoices: {merchant_id: id})[0]
   end
 
-  def self.invoice_items_invoices_transactions_success
-    InvoiceItem.joins(invoice: [:transactions])
-    .where(transactions: {result: 'success'})
-  end
+  # def self.invoice_items_invoices_transactions_success
+  #   InvoiceItem.joins(invoice: [:transactions])
+  #   .where(transactions: {result: 'success'})
+  # end
 
 end
 
     # SELECT m.name, SUM(ii.quantity * ii.unit_price) AS revenue 
     # FROM merchants as m 
     # INNER JOIN invoices as i 
-    #   ON m.id = i.merchant_id 
+    # ON m.id = i.merchant_id 
     # INNER JOIN invoice_items as ii 
-    #   ON i.id = ii.invoice_id 
+    # ON i.id = ii.invoice_id 
     # INNER JOIN transactions as t 
-    #   ON i.id = t.invoice_id 
+    # ON i.id = t.invoice_id 
     # WHERE t.result = 'success' 
     # GROUP BY m.name 
     # ORDER BY revenue 

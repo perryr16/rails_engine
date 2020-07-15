@@ -81,13 +81,40 @@ describe 'business intelligence' do
     expect(json[:data][1][:attributes][:name]).to eq(@merchant3.name)
     expect(json[:data][1][:id]).to eq("3")
   end
+  it 'can get merchants who have sold the most items given too many to return' do
+    get "/api/v1/merchants/most_items?quantity=200"
+
+    json = JSON.parse(response.body, symbolize_names: true)
+
+
+    expect(json[:data].length).to eq(4)
+
+    expect(json[:data][0][:attributes][:name]).to eq(@merchant1.name)
+    expect(json[:data][0][:id]).to eq("1")
+
+    expect(json[:data][1][:attributes][:name]).to eq(@merchant3.name)
+    expect(json[:data][1][:id]).to eq("3")
+
+    expect(json[:data][-1][:attributes][:name]).to eq(@merchant4.name)
+    expect(json[:data][-1][:id]).to eq("4")
+
+    expect(json)
+  end
 
   it 'can get revenue between two dates' do
     get '/api/v1/revenue?start=2000-01-01&end=2021-07-15'
 
     json = JSON.parse(response.body, symbolize_names: true)
 
-    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(1200.50)
+    expect(json[:data][:attributes][:revenue]).to eq(1200.50)
+  end
+
+  it 'can get revenue between two dates that arent in db' do
+    get '/api/v1/revenue?start=2030-01-01&end=2031-01-01'
+
+    json = JSON.parse(response.body, symbolize_names: true)
+
+    expect(json[:data][:attributes][:revenue]).to eq(nil)
   end
 
   it 'can get revenue for one merchant' do

@@ -65,6 +65,15 @@ describe "Search Endpoints for Merchants" do
     expect(json[:data].class).to eq(Array)
 
     expect(json[:data][0][:attributes][:name]).to eq('chill zone')
+  end
+  it 'can find a merchant based on date of updated_at and fragment of name' do
+    get "/api/v1/merchants/find_all?updated_at=12&name=21adf434"
+    json = JSON.parse(response.body, symbolize_names: true)
+    
+
+    expect(json[:data].class).to eq(Array)
+
+    expect(json[:data].empty?).to eq(true)
     # expect(json[:data][1][:attributes][:name]).to eq('THRILL zone')
   end
   
