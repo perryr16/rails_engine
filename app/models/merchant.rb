@@ -17,7 +17,7 @@ class Merchant < ApplicationRecord
 
   def self.param_generator(key, value)
     if key.include?('ated_at')
-      "to_char(#{key}, 'YYYY-MM-DD HH24:MI:SS') LIKE '%#{value}%'"
+      "to_char(#{key}, 'YYYY-MM-DD HH24:MI:SS UTC +00:00') LIKE '%#{value}%'"
     else 
       "lower(#{key}) LIKE '%#{value.downcase}%'"
     end

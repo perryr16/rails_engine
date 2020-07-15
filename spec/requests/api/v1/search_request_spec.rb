@@ -48,6 +48,14 @@ describe "Search Endpoints for Merchants" do
 
     expect(json[:data][:attributes][:name]).to eq(@merchant4.name)
   end
+  it 'can find a merchant based on EXACT date of created_at' do
+    get "/api/v1/merchants/find?created_at=#{@merchant.created_at}"
+    json = JSON.parse(response.body, symbolize_names: true)
+    
+    expect(json[:data].class).to eq(Hash)
+
+    expect(json[:data][:attributes][:name]).to eq(@merchant.name)
+  end
 
   it 'can find a merchant based on date of updated_at and fragment of name' do
     get "/api/v1/merchants/find_all?updated_at=12&name=zone"
