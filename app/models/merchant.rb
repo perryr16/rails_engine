@@ -3,7 +3,6 @@ class Merchant < ApplicationRecord
   has_many :invoices, dependent: :destroy
 
   def self.find_all(params)
-
     where(sql_injection(params))
   end
 
@@ -31,9 +30,7 @@ class Merchant < ApplicationRecord
 
   def self.most_revenue(params)
     Merchant.select("merchants.*, SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
-    .joins(:invoices)
-    .joins("INNER JOIN invoice_items ON invoices.id = invoice_items.invoice_id")
-    .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
+    .joins(invoices: [:invoice_items, :transactions])
     .where(transactions: {result: "success"})
     .group(:id)
     .order("SUM(invoice_items.quantity * invoice_items.unit_price) DESC")
@@ -43,9 +40,7 @@ class Merchant < ApplicationRecord
     
   def self.most_items(params)
     Merchant.select("merchants.*, SUM(invoice_items.quantity) as items_sold")
-    .joins(:invoices)
-    .joins("INNER JOIN invoice_items ON invoices.id = invoice_items.invoice_id")
-    .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
+    .joins(invoices: [:invoice_items, :transactions])
     .where(transactions: {result: "success"})
     .group(:id)
     .order("SUM(invoice_items.quantity) DESC")
@@ -57,8 +52,7 @@ class Merchant < ApplicationRecord
     end_date = params[:end].to_datetime + 1
 
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
-    .joins(:invoice)
-    .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
+    .joins(invoice: [:transactions])
     .where(transactions: {result: "success"})
     .where("invoices.created_at > '#{start_date}' AND invoices.created_at < '#{end_date}'")[0]
   end
@@ -67,20 +61,10 @@ class Merchant < ApplicationRecord
    def self.individual_revenue(params)
     id = params[:id]
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
-    .joins(:invoice)
-    .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
+    .joins(invoice: [:transactions])
     .where(transactions: {result: 'success'})
     .where(invoices: {merchant_id: id})[0]
   end
-
-  # def self.top_5_by_items_sold
-    # needed 
-    # merchants: all
-    # invoices: merchant id, id 
-    # invoice_items: invoice_id, transaction_id 
-    # transactions: invoice_id, result
-    # calculations: SUM(invoice_items.quantity) group by merchant
-  # end
 
 end
 
