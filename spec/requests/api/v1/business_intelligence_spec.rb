@@ -92,10 +92,20 @@ describe 'business intelligence' do
 
   it 'can get revenue for one merchant' do
     get "/api/v1/merchants/#{@merchant1.id}/revenue"
-
     json = JSON.parse(response.body, symbolize_names: true)
-
     expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(3.0)
+
+    get "/api/v1/merchants/#{@merchant2.id}/revenue"
+    json = JSON.parse(response.body, symbolize_names: true)
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(1001.0)
+
+    get "/api/v1/merchants/#{@merchant3.id}/revenue"
+    json = JSON.parse(response.body, symbolize_names: true)
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(196.0)
+
+    get "/api/v1/merchants/#{@merchant4.id}/revenue"
+    json = JSON.parse(response.body, symbolize_names: true)
+    expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(0.5)
   end
 end
 

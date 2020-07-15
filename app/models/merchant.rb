@@ -73,6 +73,15 @@ class Merchant < ApplicationRecord
     .where(invoices: {merchant_id: id})[0]
   end
 
+  # def self.top_5_by_items_sold
+    # needed 
+    # merchants: all
+    # invoices: merchant id, id 
+    # invoice_items: invoice_id, transaction_id 
+    # transactions: invoice_id, result
+    # calculations: SUM(invoice_items.quantity) group by merchant
+  # end
+
 end
 
     # SELECT m.name, SUM(ii.quantity * ii.unit_price) AS revenue 
