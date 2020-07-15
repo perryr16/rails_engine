@@ -58,7 +58,7 @@ class Merchant < ApplicationRecord
   end
 
 
-   def self.individual_revenue(params)
+  def self.individual_revenue(params)
     id = params[:id]
     InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .joins(invoice: [:transactions])
