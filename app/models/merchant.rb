@@ -17,8 +17,7 @@ class Merchant < ApplicationRecord
 
   def self.param_generator(key, value)
     if key.include?('ated_at')
-      value = value.to_datetime
-      "#{key} >= '#{value}' AND #{key} < '#{value+1.seconds}'"
+      "to_char(#{key}, 'YYYY-MM-DD HH24:MI:SS') LIKE '%#{value}%'"
     else 
       "lower(#{key}) LIKE '%#{value.downcase}%'"
     end
@@ -51,19 +50,23 @@ class Merchant < ApplicationRecord
     start_date = params[:start].to_datetime
     end_date = params[:end].to_datetime + 1
 
-    InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
-    .joins(invoice: [:transactions])
-    .where(transactions: {result: "success"})
+    invoice_items_invoices_transactions_success
+    .select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .where("invoices.created_at > '#{start_date}' AND invoices.created_at < '#{end_date}'")[0]
   end
 
 
   def self.individual_revenue(params)
     id = params[:id]
-    InvoiceItem.select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
-    .joins(invoice: [:transactions])
-    .where(transactions: {result: 'success'})
+
+    invoice_items_invoices_transactions_success
+    .select("SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
     .where(invoices: {merchant_id: id})[0]
+  end
+
+  def self.invoice_items_invoices_transactions_success
+    InvoiceItem.joins(invoice: [:transactions])
+    .where(transactions: {result: 'success'})
   end
 
 end
@@ -81,9 +84,7 @@ end
     # ORDER BY revenue 
     # DESC LIMIT 7;
 
-      # Merchant.select("merchants.*, SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue").joins(:invoices).joins("INNER JOIN invoice_items ON invoices.id = invoice_items.invoice_id").joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id").where(transactions: {result: "success"}).group(:id).order("SUM(invoice_items.quantity * invoice_items.unit_price) DESC").limit(5)
-
-          # SELECT m.*, SUM(ii.quantity) as items_sold 
+    # SELECT m.*, SUM(ii.quantity) as items_sold 
     # FROM merchants as m 
     # INNER JOIN invoices as i 
     # ON m.id = i.merchant_id 
@@ -96,16 +97,6 @@ end
     # ORDER BY items_sold 
     # DESC LIMIT 5;
 
-     # Merchant.select("merchants.*, SUM(invoice_items.quantity * invoice_items.unit_price) AS revenue")
-    # Merchant.select("SUM(invoice_items.quantity * invoice_items.unit_price * merchants.id) AS revenue")
-    # .joins(:invoices)
-    # .joins("INNER JOIN invoice_items ON invoices.id = invoice_items.invoice_id")
-    # .joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id")
-    # .where("invoices.updated_at > '#{start_date}' AND invoices.updated_at < '#{end_date}' AND transactions.result = 'success'")
-    # .group(:id)
-    # .order("SUM(invoice_items.quantity * invoice_items.unit_price) DESC")
-    
-    # .where(transactions: {result: "success"})
     # SELECT SUM(ii.quantity * ii.unit_price) AS revenue 
     # FROM merchants as m 
     # INNER JOIN invoices as i ON m.id = i.merchant_id 
@@ -120,6 +111,3 @@ end
     # INNER JOIN transactions ON invoices.id = transactions.invoice_id 
     # WHERE (transactions.result = 'success') 
 
-
-    # InvoiceItem.joins(:invoice).joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id").where(transactions: {result: 'success'}).where("invoices.created_at > '2012-01-01' AND invoices.updated_at < '2020-07-15'")
-    # InvoiceItem.joins(:invoice).joins("INNER JOIN transactions ON invoices.id = transactions.invoice_id").where(transactions: {result: 'success'}).where("invoices.created_at > '2012-01-01' AND invoices.updated_at < '2020-07-15'").where("invoices.merchant_id = 1") 

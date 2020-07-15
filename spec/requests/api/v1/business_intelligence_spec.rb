@@ -108,8 +108,3 @@ describe 'business intelligence' do
     expect(json[:data][:attributes][:revenue].to_f.round(2)).to eq(0.5)
   end
 end
-
-
-
-
-# end

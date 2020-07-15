@@ -22,8 +22,7 @@ class Item < ApplicationRecord
 
   def self.param_generator(key, value)
     if key.include?('ated_at')
-      value = value.to_datetime
-      "#{key} >= '#{value}' AND #{key} < '#{value+1.seconds}'"
+      "to_char(#{key}, 'YYYY-MM-DD HH24:MI:SS') LIKE '%#{value}%'"
     else 
       "lower(#{key}) LIKE '%#{value.downcase}%'"
     end
