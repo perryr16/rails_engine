@@ -34,14 +34,6 @@ describe "Merchants API" do
     end
   end
 
-  it "Can get a merchant" do
-
-    get '/api/v1/dog'
-
-      binding.pry
-    
-  end
-
   it 'can get a merchant' do
     100.times do 
       create(:merchant)
