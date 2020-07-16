@@ -9,10 +9,7 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def create
-    id = Merchant.last.id if Merchant.last 
-    id = 0 if Merchant.last.nil?
-    params = merchant_params.merge(id: id+1)
-    render json: MerchantSerializer.new(Merchant.create(merchant_params))
+    render json: MerchantSerializer.new(Merchant.create(new_merchant_params))
   end
 
   def destroy 
@@ -27,5 +24,11 @@ class Api::V1::MerchantsController < ApplicationController
 
   def merchant_params 
     params.permit(:name)
+  end
+
+  def new_merchant_params
+    id = Merchant.last.id if Merchant.last 
+    id = 0 if Merchant.last.nil?
+    params = merchant_params.merge(id: id+1)
   end
 end
