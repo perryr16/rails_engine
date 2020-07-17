@@ -3,7 +3,6 @@ Rails.application.routes.draw do
 
 
   namespace :api do
-    # scope module: 'api' do
       namespace :v1 do
         get '/items/find', to: 'items/find#show'
         get '/items/find_all', to: 'items/find#index'
@@ -14,8 +13,8 @@ Rails.application.routes.draw do
         get 'merchants/most_items', to: 'merchants/most_items#index'
         get 'merchants/:id/revenue', to: 'merchants/revenue#show'
         get 'revenue', to: 'merchants/revenue#index'
-        get 'merchants/find', to: 'merchants/find#show' #can this be resource based?
-        get 'merchants/find_all', to: 'merchants/find#index' #can this be resource based?
+        get 'merchants/find', to: 'merchants/find#show'
+        get 'merchants/find_all', to: 'merchants/find#index'
         resources :merchants do 
           resources :items, controller: 'merchants/items'
         end
