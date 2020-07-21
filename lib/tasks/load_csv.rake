@@ -15,15 +15,12 @@ task :load_csv, [:test] do |t, test|
   Transaction.destroy_all
   # ActiveRecord::Base.connection.reset_pk_sequence!('customers')
 
-  # customers_csv = "./data/customers.csv"
   customers_csv = "./data/customers#{test}.csv"
   build(customers_csv, Customer)
 
-  # merchants_csv = "./data/merchants.csv"
   merchants_csv = "./data/merchants#{test}.csv"
   build(merchants_csv, Merchant)
   
-  # items_csv = "./data/items.csv"
   items_csv = "./data/items#{test}.csv"
   build(items_csv, Item)
 
@@ -52,7 +49,6 @@ def build(file, model)
     model.create(row.to_hash)
   end
 end
-
 
 def unit_price(row)
   row["unit_price"] = (row["unit_price"].to_f/100).to_s

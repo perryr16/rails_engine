@@ -81,7 +81,8 @@ describe 'business intelligence' do
     expect(json[:data][1][:attributes][:name]).to eq(@merchant3.name)
     expect(json[:data][1][:id]).to eq("3")
   end
-  it 'can get merchants who have sold the most items given too many to return' do
+
+  it 'SAD: can get merchants who have sold the most items given too many to return' do
     get "/api/v1/merchants/most_items?quantity=200"
 
     json = JSON.parse(response.body, symbolize_names: true)
@@ -109,7 +110,7 @@ describe 'business intelligence' do
     expect(json[:data][:attributes][:revenue]).to eq(1200.50)
   end
 
-  it 'can get revenue between two dates that arent in db' do
+  it 'SAD: can get revenue between two dates that arent in db' do
     get '/api/v1/revenue?start=2030-01-01&end=2031-01-01'
 
     json = JSON.parse(response.body, symbolize_names: true)

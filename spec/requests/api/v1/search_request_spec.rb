@@ -66,15 +66,14 @@ describe "Search Endpoints for Merchants" do
 
     expect(json[:data][0][:attributes][:name]).to eq('chill zone')
   end
-  it 'can find a merchant based on date of updated_at and fragment of name' do
+
+  it 'SAD: cant find a merchant based on date that does not exist' do
     get "/api/v1/merchants/find_all?updated_at=12&name=21adf434"
     json = JSON.parse(response.body, symbolize_names: true)
     
-
     expect(json[:data].class).to eq(Array)
 
     expect(json[:data].empty?).to eq(true)
-    # expect(json[:data][1][:attributes][:name]).to eq('THRILL zone')
   end
   
 
@@ -83,12 +82,12 @@ end
 describe "Search endpoints for Items"do
   before :each do 
     merchant = create(:merchant)
-    @item1 = create(:item, merchant: merchant, name: "BOBS item", description: "nope", updated_at: '2015-03-27 14:58:03 UTC')
+    @item1 = create(:item, merchant: merchant, name: "BOBS item", description: "nope", updated_at: '2015-03-27 14:58:03 UTC', unit_price: 1.23)
     @item2 = create(:item, merchant: merchant, name: "bob bob bob", description: "xCATx", updated_at: '2012-03-27 14:58:03 UTC' )
     @item3 = create(:item, merchant: merchant, name: "Strawberry and rhubob", description: "cars", updated_at: '2015-03-27 14:58:05 UTC')
     @item4 = create(:item, merchant: merchant, name: "bo bo bo", description: "adfadfcAtcat", updated_at: '2012-03-27 14:58:03 UTC')
     @item5 = create(:item, merchant: merchant, name: "not valid", description: "cat")
-    @item6 = create(:item, merchant: merchant, name: "dog", description: "DOG")
+    @item6 = create(:item, merchant: merchant, name: "dog", description: "DOG", unit_price: 23.99)
   end
 
   it 'can find a list of items that contain a fragment, case insensitive of name' do
@@ -196,6 +195,16 @@ describe "Search endpoints for Items"do
 
  
     expect(json[:data].count).to eq(2)
+  end
+  it 'can find a list of items based on date of updated_at and fragment of name' do
+    get "/api/v1/items/find_all?unit_price=23"
+    json = JSON.parse(response.body, symbolize_names: true)
+    
+    expect(json[:data].class).to eq(Array)
+    
+    expect(json[:data][0][:attributes][:name]).to eq(@item1.name)
+    expect(json[:data][1][:attributes][:name]).to eq(@item6.name)
+
   end
 
 
